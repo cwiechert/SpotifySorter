@@ -101,10 +101,12 @@ def add_songs(playlist_id: str, track_ids: list):
             progress_text = f"Progress: [ {i + 1} / {total_tracks} ]"
             print(progress_text, end='\r')
             sys.stdout.flush()
-            time.sleep(1)
+            
         except Exception as e:
             print(f"\nError adding song {song_id}: {e}")
             continue
+        
+        time.sleep(1)
             
     print(f"\nSongs added to the playlist.\n")
 
