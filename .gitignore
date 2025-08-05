@@ -1,0 +1,60 @@
+# --- Environment Variables ---
+# Never commit your credentials or secrets!
+.env
+
+# --- Python ---
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# --- Virtual Environments ---
+# Exclude common virtual environment folders
+.venv/
+venv/
+env/
+ENV/
+virtualenv/
+*/activate
+
+# --- Spotipy ---
+# The cache file contains the user's authentication token.
+.cache*
+
+# --- Backups ---
+# Ignore the Backups folder created by the script.
+# Generated data like this is typically not tracked in Git.
+Backups/
+
+# --- IDE / Editor specific ---
+# Visual Studio Code
+.vscode/
+
+# --- Operating System specific ---
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
