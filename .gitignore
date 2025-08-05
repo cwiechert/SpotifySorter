@@ -29,7 +29,6 @@ wheels/
 .installed.cfg
 *.egg
 MANIFEST
-Backups/
 
 # --- Virtual Environments ---
 # Exclude common virtual environment folders
