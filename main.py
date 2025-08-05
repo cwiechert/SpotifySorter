@@ -49,7 +49,7 @@ def get_all_playlist_tracks(playlist_id: str, playlist_name: str) -> pd.DataFram
         df = df.dropna(subset=['song_id', 'album_release_date'])
         df = df.sort_values(by=['album_release_date', 'album_name'], ascending=[True, True])
         
-        # Guardar archivo y formatear el nombre de la playlist
+        # Save a backup and format the playlist name to be compatible
         sanitized_name = re.sub(r'[<>:"/\\|?*]', '', playlist_name)
         backup_dir = r".\Backups"
         os.makedirs(backup_dir, exist_ok=True)
@@ -95,20 +95,19 @@ def add_songs(playlist_id: str, track_ids: list):
         return
         
     total_tracks = len(track_ids)
-    print(f"Añadiendo {total_tracks} canciones una por una (esto será lento)...")
+    print(f"Adding {total_tracks} songs one-by-one (this will be slow)...")
     for i, song_id in enumerate(track_ids):
         try:
             sp.playlist_add_items(playlist_id, [song_id])
-            # Formato mejorado para el progreso
-            progress_text = f"Progreso: [ {i + 1} / {total_tracks} ]"
+            progress_text = f"Progress: [ {i + 1} / {total_tracks} ]"
             print(progress_text, end='\r')
             sys.stdout.flush()
             time.sleep(1)
         except Exception as e:
-            print(f"\nError añadiendo la canción {song_id}: {e}")
+            print(f"\nError adding song {song_id}: {e}")
             continue
             
-    print(f"\nProceso completado. Se han añadido todas las canciones a la playlist.")
+    print(f"\nSongs added to the playlist.")
 
 
 if __name__ == '__main__':
@@ -120,7 +119,7 @@ if __name__ == '__main__':
         scope=['playlist-modify-private', 'playlist-read-private', 'playlist-modify-public'])
         )
 
-    # Esto extrae las primeras 50 playlists del usuario, si hay mas hay que hacer otra logica
+    # The following code extracts the first 50 user playlists. If there are more we'll have to implement a new logic.
     user_id = sp.me()['id']
     playlists = sp.user_playlists(user=user_id) 
     playlist_items = playlists['items']
