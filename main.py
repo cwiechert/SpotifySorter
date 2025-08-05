@@ -78,7 +78,6 @@ def remove_all_tracks_from_playlist(playlist_id: str, track_ids: list) -> bool:
         chunk = track_ids[i:i + 100]
         try:
             sp.playlist_remove_all_occurrences_of_items(playlist_id, chunk)
-            print(f"Removed batch of {len(chunk)} tracks.")
         except Exception as e:
             print(f"Error removing batch: {e}")
     print("All tracks removed from playlist.")
@@ -107,7 +106,7 @@ def add_songs(playlist_id: str, track_ids: list):
             print(f"\nError adding song {song_id}: {e}")
             continue
             
-    print(f"\nSongs added to the playlist.")
+    print(f"\nSongs added to the playlist.\n")
 
 
 if __name__ == '__main__':
