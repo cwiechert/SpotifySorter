@@ -16,7 +16,12 @@ REDIRECT_URI = os.getenv('REDIRECT_URI')
 EXCLUDE = ['Mi playlist #40']
 
 
-def get_all_playlist_tracks(playlist_id: str, playlist_name: str) -> pd.DataFrame:
+def get_all_playlist_tracks(
+        playlist_id: str, 
+        playlist_name: str, 
+        sorted: bool = True,
+        save_backup: bool = True
+        ) -> pd.DataFrame:
     """
     Fetches all tracks from a given Spotify playlist and returns them as a 
     DataFrame, sorted chronologically by album release date and then by album name.
@@ -47,15 +52,19 @@ def get_all_playlist_tracks(playlist_id: str, playlist_name: str) -> pd.DataFram
         df = pd.DataFrame(songs)
         df['album_release_date'] = pd.to_datetime(df['album_release_date'], errors='coerce')
         df = df.dropna(subset=['song_id', 'album_release_date'])
-        df = df.sort_values(by=['album_release_date', 'album_name'], ascending=[True, True])
+
+        if sorted:
+            df = df.sort_values(by=['album_release_date', 'album_name'], ascending=[True, True])
         
-        # Save a backup and format the playlist name to be compatible
-        sanitized_name = re.sub(r'[<>:"/\\|?*]', '', playlist_name)
-        backup_dir = r".\Backups"
-        os.makedirs(backup_dir, exist_ok=True)
-        timestamp = datetime.datetime.now().strftime('%Y%m%d-%H%M-%S')
-        filename = os.path.join(backup_dir, f"{timestamp}_{sanitized_name}.csv")
-        df.to_csv(filename, index=False)
+        if save_backup:
+            # Save a backup and format the playlist name to be compatible
+            sanitized_name = re.sub(r'[<>:"/\\|?*]', '', playlist_name)
+            backup_dir = r".\Backups"
+            os.makedirs(backup_dir, exist_ok=True)
+            timestamp = datetime.datetime.now().strftime('%Y%m%d-%H%M-%S')
+            filename = os.path.join(backup_dir, f"{timestamp}_{sanitized_name}.csv")
+            df.to_csv(filename, index=False)
+        
         return df
     
     except Exception as e:
@@ -78,8 +87,9 @@ def remove_all_tracks_from_playlist(playlist_id: str, track_ids: list) -> bool:
         chunk = track_ids[i:i + 100]
         try:
             sp.playlist_remove_all_occurrences_of_items(playlist_id, chunk)
+            time.sleep(1)
         except Exception as e:
-            print(f"Error removing batch: {e}")
+            print(f'Error removing chunk: {e}')
     print("All tracks removed from playlist.")
     return True
 
@@ -105,7 +115,7 @@ def add_songs(playlist_id: str, track_ids: list):
         except Exception as e:
             print(f"\nError adding song {song_id}: {e}")
             continue
-        
+
         time.sleep(1)
             
     print(f"\nSongs added to the playlist.\n")
@@ -125,7 +135,7 @@ if __name__ == '__main__':
     playlists = sp.user_playlists(user=user_id) 
     playlist_items = playlists['items']
 
-    PLAYLISTS = {p['name']: p['id'] for p in playlist_items if p['name'] not in EXCLUDE}
+    PLAYLISTS = {p['name']: p['id'] for p in playlist_items if (p['name'] not in EXCLUDE and p['owner']['display_name'] == 'linnoromero')}
 
     for name, id in PLAYLISTS.items():
         print(name)
